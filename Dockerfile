@@ -11,15 +11,6 @@ RUN apt-get update \
     curl \
  && rm -rf /var/lib/apt/lists/*
 
-# install tippecanoe
-ARG TIPPECANOE_VERSION=2.29.0
-RUN curl -sL https://github.com/felt/tippecanoe/archive/refs/tags/${TIPPECANOE_VERSION}.tar.gz | tar -xz \
- && cd tippecanoe-${TIPPECANOE_VERSION} \
- && make -j \
- && make install \
- && cd .. \
- && rm -rf tippecanoe-${TIPPECANOE_VERSION}
-
 # install dependencies from uv
 COPY pyproject.toml pyproject.toml
 COPY uv.lock uv.lock
