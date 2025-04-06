@@ -3,9 +3,6 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 import logging
-from datetime import datetime
-from enum import Enum
-from typing import Iterable
 
 import scrapy
 
@@ -78,11 +75,9 @@ KEYS_THAT_SHOULD_MATCH = [
     "brand_wikidata",
 ]
 
-TRANSLATABLE_EXTRA_KEYS = [
-]
+TRANSLATABLE_EXTRA_KEYS = []
 
-TRANSLATABLE_PREFIXES = [
-]
+TRANSLATABLE_PREFIXES = []
 
 
 def get_merged_item(matched_items: dict, main_language: str) -> dict:
