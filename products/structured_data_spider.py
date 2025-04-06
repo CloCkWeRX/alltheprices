@@ -268,11 +268,13 @@ class StructuredDataSpider(Spider):
         typeOfGood	OwnershipInfo  or
         TypeAndQuantityNode	The product that this structured value is referring to.
         """
+
+
         # if self.convert_microdata:
         #     MicrodataParser.convert_to_json_ld(response)
         for ld_item in self.iter_linked_data(response):
             self.pre_process_data(ld_item)
-
+            print(ld_item)
             item = LinkedDataParser.parse_ld(ld_item) # , price_format=self.price_format
             url = get_url(response)
 
