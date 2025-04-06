@@ -6,7 +6,7 @@ class BotanicSpider(SitemapSpider, StructuredDataSpider):
     name = "botanic"
     allowed_domains = ["botanic.com"]
 
-    sitemap_urls = ["https://www.botanic.com/Assets/Rbs/Seo/100541/fr_FR/Rbs_Catalog_Product.1.xml"]
+    sitemap_urls = ["https://www.botanic.com/robots.txt"]
     sitemap_rules = [
         (r"https://www.botanic.com/produit/\d+/[\w]+.html", "parse_sd"),
     ]
