@@ -275,7 +275,7 @@ class StructuredDataSpider(Spider):
         #     MicrodataParser.convert_to_json_ld(response)
         for ld_item in self.iter_linked_data(response):
             self.pre_process_data(ld_item)
-            print(ld_item)
+
             item = LinkedDataParser.parse_ld(ld_item)  # , price_format=self.price_format
             url = get_url(response)
 
