@@ -123,7 +123,7 @@ if [ ! $retval -eq 0 ]; then
 fi
 (>&2 echo "Changed files: ${changed_filenames}")
 
-spiders=$(echo "${changed_filenames}" | grep "^locations/spiders/")
+spiders=$(echo "${changed_filenames}" | grep "^products/spiders/")
 
 spider_count=$(echo "${spiders}" | wc -l)
 if [ $spider_count -gt 15 ]; then
@@ -134,7 +134,7 @@ fi
 # Manually run a couple spiders when uv.lock or pyproject.toml changes
 if echo "${changed_filenames}" | grep -q "pyproject.toml" || echo "${changed_filenames}" | grep -q "uv.lock"; then
     echo "pyproject.toml or uv.lock changed. Running a couple spiders."
-    spiders=("locations/spiders/the_works.py" "locations/spiders/the_coffee_club_au.py" "locations/spiders/woods_coffee_us.py")
+    spiders=("products/spiders/harrisfarm_au.py" "products/spiders/botanic_fr.py")
 elif [ "$spider_count" -eq 0 ]; then
     (>&2 echo "no spiders modified (only deleted?)")
     exit 0
@@ -150,7 +150,7 @@ RUN_DIR="/tmp/output"
 EXIT_CODE=0
 for file_changed in $spiders
 do
-    if [[ $file_changed != locations/spiders/* ]]; then
+    if [[ $file_changed != products/spiders/* ]]; then
         echo "${file_changed} is not a spider. Skipping."
         continue
     fi
@@ -171,7 +171,6 @@ do
     timeout -k 5s 150s \
     uv run scrapy runspider \
         -o "file://${OUTFILE}:geojson" \
-        -o "file://${PARQUETFILE}:parquet" \
         --loglevel=INFO \
         --logfile="${LOGFILE}" \
         -s CLOSESPIDER_TIMEOUT=120 \

@@ -273,7 +273,7 @@ def check_file(file_path: Path) -> Tuple[Path, List[str]]:
 
 def main():
     # Find all Python files in the spiders directory
-    spider_root = os.path.join(os.path.dirname(__file__), "../locations/spiders")
+    spider_root = os.path.join(os.path.dirname(__file__), "../products/spiders")
     python_files = [f for f in os.listdir(spider_root) if f.endswith(".py")]
 
     # use multiprocessing map to check all files in parallel
