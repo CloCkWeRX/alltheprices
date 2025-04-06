@@ -88,26 +88,19 @@ OUTPUT_LINECOUNT=$(cat "${SPIDER_RUN_DIR}"/output/*.json | wc -l | tr -d ' ')
 # uv run scrapy insights --atp-nsi-osm "${SPIDER_RUN_DIR}/output" --outfile "${SPIDER_RUN_DIR}/stats/_insights.json"
 # (>&2 echo "Done comparing against Name Suggestion Index and OpenStreetMap")
 
-retval=$?
-if [ ! $retval -eq 0 ]; then
-    (>&2 echo "Couldn't generate pmtiles")
-    exit 1
-fi
-(>&2 echo "Done generating pmtiles")
-
-python ci/concatenate_parquet.py \
-    --output "${SPIDER_RUN_DIR}/output.parquet" \
-    "${SPIDER_RUN_DIR}"/output/*.parquet
-retval=$?
-if [ ! $retval -eq 0 ]; then
-    (>&2 echo "Couldn't convert to parquet")
-fi
+# python ci/concatenate_parquet.py \
+#     --output "${SPIDER_RUN_DIR}/output.parquet" \
+#     "${SPIDER_RUN_DIR}"/output/*.parquet
+# retval=$?
+# if [ ! $retval -eq 0 ]; then
+#     (>&2 echo "Couldn't convert to parquet")
+# fi
 
 # concatenate_parquet.py leaves behind the parquet files for each spider, and I don't
 # want to include those in the output zip, so delete them here.
-rm "${SPIDER_RUN_DIR}"/output/*.parquet
+# rm "${SPIDER_RUN_DIR}"/output/*.parquet
 
-(>&2 echo "Done concatenating parquet files")
+# (>&2 echo "Done concatenating parquet files")
 
 (>&2 echo "Writing out summary JSON")
 echo "{\"count\": ${SPIDER_COUNT}, \"results\": []}" >> "${SPIDER_RUN_DIR}/stats/_results.json"
@@ -223,7 +216,6 @@ RUN_END=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 jq -n --compact-output \
     --arg run_id "${RUN_TIMESTAMP}" \
     --arg run_output_url "${RUN_URL_PREFIX}/output.zip" \
-    --arg run_pmtiles_url "${RUN_URL_PREFIX}/output.pmtiles" \
     --arg run_parquet_url "${RUN_URL_PREFIX}/output.parquet" \
     --arg run_stats_url "${RUN_URL_PREFIX}/stats/_results.json" \
     --arg run_insights_url "${RUN_URL_PREFIX}/stats/_insights.json" \
@@ -267,7 +259,7 @@ if [ ! $retval -eq 0 ]; then
     exit 1
 fi
 
-(>&2 echo "Saved latest.json to https://data.alltheprices.xyz/runs/latest.json")
+(>&2 echo "Saved latest.json to /runs/latest.json")
 
 (>&2 echo "Creating history.json")
 
@@ -298,7 +290,7 @@ fi
 
 mv history.json.tmp history.json
 
-(>&2 echo "Saving history.json to https://data.alltheprices.xyz/runs/history.json")
+(>&2 echo "Saving history.json to /runs/history.json")
 
 aws s3 cp \
     --only-show-errors \
@@ -331,7 +323,7 @@ touch "${SPIDER_RUN_DIR}/latest_placeholder.txt"
 
 aws s3 cp \
     --only-show-errors \
-    --website-redirect="https://data.alltheprices.xyz/${RUN_KEY_PREFIX}/output.zip" \
+    --website-redirect="/${RUN_KEY_PREFIX}/output.zip" \
     "${SPIDER_RUN_DIR}/latest_placeholder.txt" \
     "s3://${S3_BUCKET}/runs/latest/output.zip"
 
@@ -343,7 +335,7 @@ fi
 
 aws s3 cp \
     --only-show-errors \
-    --website-redirect="https://data.alltheprices.xyz/${RUN_KEY_PREFIX}/output.pmtiles" \
+    --website-redirect="/${RUN_KEY_PREFIX}/output.pmtiles" \
     "${SPIDER_RUN_DIR}/latest_placeholder.txt" \
     "s3://${S3_BUCKET}/runs/latest/output.pmtiles"
 
@@ -353,32 +345,32 @@ if [ ! $retval -eq 0 ]; then
     exit 1
 fi
 
-aws s3 cp \
-    --only-show-errors \
-    --website-redirect="https://data.alltheprices.xyz/${RUN_KEY_PREFIX}/output.parquet" \
-    "${SPIDER_RUN_DIR}/latest_placeholder.txt" \
-    "s3://${S3_BUCKET}/runs/latest/output.parquet"
+# aws s3 cp \
+#     --only-show-errors \
+#     --website-redirect="/${RUN_KEY_PREFIX}/output.parquet" \
+#     "${SPIDER_RUN_DIR}/latest_placeholder.txt" \
+#     "s3://${S3_BUCKET}/runs/latest/output.parquet"
 
-retval=$?
-if [ ! $retval -eq 0 ]; then
-    (>&2 echo "Couldn't update latest/output.parquet redirect")
-    exit 1
-fi
+# retval=$?
+# if [ ! $retval -eq 0 ]; then
+#     (>&2 echo "Couldn't update latest/output.parquet redirect")
+#     exit 1
+# fi
 
-for spider in $(uv run scrapy list)
-do
-    aws s3 cp \
-        --only-show-errors \
-        --website-redirect="https://data.alltheprices.xyz/${RUN_KEY_PREFIX}/output/${spider}.json" \
-        "${SPIDER_RUN_DIR}/latest_placeholder.txt" \
-        "s3://${S3_BUCKET}/runs/latest/output/${spider}.json"
+# for spider in $(uv run scrapy list)
+# do
+#     aws s3 cp \
+#         --only-show-errors \
+#         --website-redirect="/${RUN_KEY_PREFIX}/output/${spider}.json" \
+#         "${SPIDER_RUN_DIR}/latest_placeholder.txt" \
+#         "s3://${S3_BUCKET}/runs/latest/output/${spider}.json"
 
-    retval=$?
-    if [ ! $retval -eq 0 ]; then
-        (>&2 echo "Couldn't update latest/output/${spider}.json redirect")
-        exit 1
-    fi
-done
+#     retval=$?
+#     if [ ! $retval -eq 0 ]; then
+#         (>&2 echo "Couldn't update latest/output/${spider}.json redirect")
+#         exit 1
+#     fi
+# done
 
 (>&2 echo "Done updating latest/ redirects")
 
