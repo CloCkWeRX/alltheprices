@@ -7,7 +7,7 @@ Borrows liberally from the codebase of https://alltheplaces.xyz/
 
 # Roadmap
 
-- [ ] Schema.org Product/Offer spider, based on the structureddataspider
+- [x] Schema.org Product/Offer spider, based on the structureddataspider
 - [ ] ONDC spider
 - [ ] Evaluate Common Crawl?
 
@@ -25,3 +25,18 @@ uv sync
 ```
 uv run scrapy
 ```
+
+# Scope/Priority
+
+The main focus on this project is to reward publishers of structured/open data.
+
+Following the ideas of https://5stardata.info/en/ prefer:
+
+- Interlinked, rich data such as JSON-LD or Schema.org data (5 stars)
+- Structured data such as Schema.org data (4 stars)
+- Non-proprietary open format formats (CSV, XML, etc) (3 stars)
+
+Avoid unless the maintenance hassle is worth it
+
+- Properietary formats (HTML with no structured data, Excel, etc) (2 stars or below)
+
