@@ -1,4 +1,4 @@
-# Scrapy settings for locations project
+# Scrapy settings for products project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -11,17 +11,17 @@ import os
 
 import scrapy
 
-import locations
+import products
 
-BOT_NAME = "locations"
+BOT_NAME = "products"
 
-SPIDER_MODULES = ["locations.spiders"]
-NEWSPIDER_MODULE = "locations.spiders"
-COMMANDS_MODULE = "locations.commands"
+SPIDER_MODULES = ["products.spiders"]
+NEWSPIDER_MODULE = "products.spiders"
+COMMANDS_MODULE = "products.commands"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = f"Mozilla/5.0 (X11; Linux x86_64) {BOT_NAME}/{locations.__version__} (+https://github.com/CloCkWeRX/alltheprices; framework {scrapy.__version__})"
+USER_AGENT = f"Mozilla/5.0 (X11; Linux x86_64) {BOT_NAME}/{products.__version__} (+https://github.com/CloCkWeRX/alltheprices; framework {scrapy.__version__})"
 
 ROBOTSTXT_USER_AGENT = BOT_NAME
 
@@ -31,7 +31,7 @@ ROBOTSTXT_OBEY = True
 FEED_URI = os.environ.get("FEED_URI")
 FEED_FORMAT = os.environ.get("FEED_FORMAT")
 FEED_EXPORTERS = {
-    # "osm": "locations.exporters.osm.OSMExporter",
+    # "osm": "products.exporters.osm.OSMExporter",
 }
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
@@ -63,7 +63,7 @@ TELNETCONSOLE_ENABLED = False
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
-    "locations.middlewares.track_sources.TrackSourcesMiddleware": 500,
+    "products.middlewares.track_sources.TrackSourcesMiddleware": 500,
 }
 
 # Enable or disable downloader middlewares
@@ -76,13 +76,13 @@ if os.environ.get("ZYTE_API_KEY"):
         "https": "scrapy_zyte_api.ScrapyZyteAPIDownloadHandler",
     }
     DOWNLOADER_MIDDLEWARES = {
-        "locations.middlewares.zyte_api_by_country.ZyteApiByCountryMiddleware": 500,
+        "products.middlewares.zyte_api_by_country.ZyteApiByCountryMiddleware": 500,
         "scrapy_zyte_api.ScrapyZyteAPIDownloaderMiddleware": 1000,
     }
     REQUEST_FINGERPRINTER_CLASS = "scrapy_zyte_api.ScrapyZyteAPIRequestFingerprinter"
     TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
-DOWNLOADER_MIDDLEWARES["locations.middlewares.cdnstats.CDNStatsMiddleware"] = 500
+DOWNLOADER_MIDDLEWARES["products.middlewares.cdnstats.CDNStatsMiddleware"] = 500
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -91,17 +91,17 @@ DOWNLOADER_MIDDLEWARES["locations.middlewares.cdnstats.CDNStatsMiddleware"] = 50
 # }
 
 EXTENSIONS = {
-    # "locations.extensions.add_lineage.AddLineageExtension": 100,
-    # "locations.extensions.log_stats.LogStatsExtension": 1000,
+    # "products.extensions.add_lineage.AddLineageExtension": 100,
+    # "products.extensions.log_stats.LogStatsExtension": 1000,
 }
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "locations.pipelines.duplicates.DuplicatesPipeline": 200,
+    "products.pipelines.duplicates.DuplicatesPipeline": 200,
 }
 
-LOG_FORMATTER = "locations.logformatter.DebugDuplicateLogFormatter"
+LOG_FORMATTER = "products.logformatter.DebugDuplicateLogFormatter"
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -133,7 +133,7 @@ DEFAULT_PLAYWRIGHT_SETTINGS = {
         "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
         "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
     },
-    "DOWNLOADER_MIDDLEWARES": {"locations.middlewares.playwright_middleware.PlaywrightMiddleware": 543},
+    "DOWNLOADER_MIDDLEWARES": {"products.middlewares.playwright_middleware.PlaywrightMiddleware": 543},
 }
 
 DEFAULT_PLAYWRIGHT_SETTINGS_WITH_EXT_JS = DEFAULT_PLAYWRIGHT_SETTINGS | {

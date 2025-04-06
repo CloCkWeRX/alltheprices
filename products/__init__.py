@@ -4,7 +4,7 @@ import logging
 
 import requests_cache
 
-from locations.settings import REQUESTS_CACHE_BACKEND_SETTINGS, REQUESTS_CACHE_ENABLED
+from products.settings import REQUESTS_CACHE_BACKEND_SETTINGS, REQUESTS_CACHE_ENABLED
 
 try:
     if REQUESTS_CACHE_ENABLED:
