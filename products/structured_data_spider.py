@@ -279,7 +279,8 @@ class StructuredDataSpider(Spider):
             item = LinkedDataParser.parse_ld(ld_item)  # , price_format=self.price_format
             url = get_url(response)
 
-            item["ref"] = ld_item["sku"]
+            if "sku" in ld_item:
+                item["ref"] = ld_item["sku"]
 
             if item["ref"] is None:
                 item["ref"] = self.get_ref(url, response)
