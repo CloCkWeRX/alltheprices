@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 class Product(scrapy.Item):
     name = scrapy.Field()
     website = scrapy.Field()
+    description = scrapy.Field()
     image = scrapy.Field()
     ref = scrapy.Field()
     gtin = scrapy.Field()
