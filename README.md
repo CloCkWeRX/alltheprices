@@ -10,6 +10,10 @@ Borrows liberally from the codebase of https://alltheplaces.xyz/
 - [x] Schema.org Product/Offer spider, based on the structureddataspider
 - [ ] ONDC spider
 - [ ] Evaluate Common Crawl?
+- [ ] Get running weekly somewhere
+- [ ] CI infrastructure
+- [ ] S3 infrastructure
+- [ ] Static website/way to browse
 
 # Dev setup
 
