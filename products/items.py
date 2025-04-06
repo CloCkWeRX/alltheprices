@@ -3,9 +3,6 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 import logging
-from datetime import datetime
-from enum import Enum
-from typing import Iterable
 
 import scrapy
 
@@ -18,6 +15,7 @@ class Product(scrapy.Item):
     description = scrapy.Field()
     image = scrapy.Field()
     ref = scrapy.Field()
+    product_code = scrapy.Field()
     gtin = scrapy.Field()
     gtin12 = scrapy.Field()
     gtin13 = scrapy.Field()
@@ -26,6 +24,12 @@ class Product(scrapy.Item):
     brand_wikidata = scrapy.Field()
     located_in = scrapy.Field()
     located_in_wikidata = scrapy.Field()
+    price = scrapy.Field()
+    price_is_discounted = scrapy.Field()
+    price_without_discount = scrapy.Field()
+    price_per = scrapy.Field()
+    proof_currency = scrapy.Field()
+    date = scrapy.Field()
     offers = scrapy.Field()
     extras = scrapy.Field()
 
@@ -71,11 +75,9 @@ KEYS_THAT_SHOULD_MATCH = [
     "brand_wikidata",
 ]
 
-TRANSLATABLE_EXTRA_KEYS = [
-]
+TRANSLATABLE_EXTRA_KEYS = []
 
-TRANSLATABLE_PREFIXES = [
-]
+TRANSLATABLE_PREFIXES = []
 
 
 def get_merged_item(matched_items: dict, main_language: str) -> dict:
