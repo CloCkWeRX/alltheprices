@@ -1,14 +1,13 @@
 import re
 from typing import Iterable
-from urllib.parse import parse_qs, urlencode, urljoin, urlparse
+from urllib.parse import urljoin
 
-from scrapy import Selector, Spider
+from scrapy import Spider
 from scrapy.http import Response
 
 # from products.categories import PaymentMethods, map_payment
 from products.items import Product
 from products.linked_data_parser import LinkedDataParser
-from products.microdata_parser import MicrodataParser
 
 
 def extract_image(item, response):
@@ -18,14 +17,18 @@ def extract_image(item, response):
     if image := response.xpath('//meta[@name="og:image"]/@content').get():
         item["image"] = image.strip()
 
+
 def extract_offers(item, response, ld_data):
     # Extract price from (singular)
     # TODO: Arrays
-    # {'@type': 'Offer', 
-    # 'url': 'https://www.botanic.com/produit/955533/ceanothe.html', 
-    # 'priceCurrency': 'EUR', 
-    # 'price': 29.99, 
+    # {'@type': 'Offer',
+    # 'url': 'https://www.botanic.com/produit/955533/ceanothe.html',
+    # 'priceCurrency': 'EUR',
+    # 'price': 29.99,
     # 'availability': 'https://schema.org/OutOfStock'}
+    if isinstance(ld_data["offers"], list) != True:
+        ld_data["offers"] = [ld_data["offers"]]
+
     item["offers"] = ld_data["offers"]
 
 
@@ -56,7 +59,7 @@ class StructuredDataSpider(Spider):
 
     wanted_types = [
         "Product",
-        "IndividualProduct"
+        "IndividualProduct",
         # DietarySupplement
         # Drug
         # ProductCollection
@@ -78,7 +81,6 @@ class StructuredDataSpider(Spider):
 
     def parse(self, response: Response, **kwargs):
         yield from self.parse_sd(response)
-
 
     def parse_sd(self, response: Response):  # noqa: C901
         """
@@ -269,16 +271,15 @@ class StructuredDataSpider(Spider):
         TypeAndQuantityNode	The product that this structured value is referring to.
         """
 
-
         # if self.convert_microdata:
         #     MicrodataParser.convert_to_json_ld(response)
         for ld_item in self.iter_linked_data(response):
             self.pre_process_data(ld_item)
             print(ld_item)
-            item = LinkedDataParser.parse_ld(ld_item) # , price_format=self.price_format
+            item = LinkedDataParser.parse_ld(ld_item)  # , price_format=self.price_format
             url = get_url(response)
 
-            item['ref'] = ld_item['sku']
+            item["ref"] = ld_item["sku"]
 
             if item["ref"] is None:
                 item["ref"] = self.get_ref(url, response)
