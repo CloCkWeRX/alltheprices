@@ -17,10 +17,15 @@ class Product(scrapy.Item):
     website = scrapy.Field()
     image = scrapy.Field()
     ref = scrapy.Field()
+    gtin = scrapy.Field()
+    gtin12 = scrapy.Field()
+    gtin13 = scrapy.Field()
+    sku = scrapy.Field()
     brand = scrapy.Field()
     brand_wikidata = scrapy.Field()
     located_in = scrapy.Field()
     located_in_wikidata = scrapy.Field()
+    offers = scrapy.Field()
     extras = scrapy.Field()
 
     def __init__(self, *args, **kwargs):
@@ -29,7 +34,7 @@ class Product(scrapy.Item):
             self.__setitem__("extras", {})
 
 
-# def merge_items(language_dict: dict, main_language: str, matching_key: str = "ref") -> Iterable[Feature]:
+# def merge_items(language_dict: dict, main_language: str, matching_key: str = "ref") -> Iterable[Product]:
 #     """
 #     Merge multiple items in different languages together. See starbucks_cn for example usage.
 #     :param language_dict: a dict of language to a dict of keys to items for all of the languages/items to be merged.
@@ -63,8 +68,6 @@ KEYS_THAT_SHOULD_MATCH = [
     "ref",
     "brand",
     "brand_wikidata",
-    "operator",
-    "operator_wikidata",
 ]
 
 TRANSLATABLE_EXTRA_KEYS = [
@@ -76,7 +79,7 @@ TRANSLATABLE_PREFIXES = [
 
 def get_merged_item(matched_items: dict, main_language: str) -> dict:
     """
-    Merge items in different languages, but which are the same feature, together.
+    Merge items in different languages, but which are the same product, together.
     :param matched_items: a dict of language to item for all of the languages/items to be merged.
     :param main_language: the language to be used for the main keys in the item.
     :return: a single merged item

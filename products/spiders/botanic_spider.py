@@ -1,10 +1,12 @@
-import scrapy
+from scrapy.spiders import SitemapSpider
 
+from products.structured_data_spider import StructuredDataSpider
 
-class BotanicSpiderSpider(scrapy.Spider):
-    name = "botanic_spider"
+class BotanicSpider(SitemapSpider, StructuredDataSpider):
+    name = "botanic"
     allowed_domains = ["botanic.com"]
-    start_urls = ["https://botanic.com"]
 
-    def parse(self, response):
-        pass
+    sitemap_urls = ["https://www.botanic.com/Assets/Rbs/Seo/100541/fr_FR/Rbs_Catalog_Product.1.xml"]
+    sitemap_rules = [
+        (r"https://www.botanic.com/produit/\d+/[\w]+.html", "parse_sd"),
+    ]

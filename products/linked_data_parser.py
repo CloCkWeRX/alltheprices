@@ -6,7 +6,7 @@ import traceback
 import chompjs
 import json5
 
-from products.items import Feature, add_social_media
+from products.items import Product
 
 logger = logging.getLogger(__name__)
 
@@ -58,76 +58,14 @@ class LinkedDataParser:
                 return ld_obj
 
     @staticmethod
-    def parse_ld(ld, time_format: str = "%H:%M") -> Feature:  # noqa: C901
-        item = Feature()
-
-        if (
-            (geo := LinkedDataParser.get_case_insensitive(ld, "geo"))
-            or "location" in [key.lower() for key in ld]
-            and (geo := LinkedDataParser.get_case_insensitive(ld["location"], "geo"))
-        ):
-            if isinstance(geo, list):
-                geo = geo[0]
-
-            if LinkedDataParser.check_type(geo.get("@type"), "GeoCoordinates"):
-                item["lat"] = LinkedDataParser.clean_float(LinkedDataParser.get_case_insensitive(geo, "latitude"))
-                item["lon"] = LinkedDataParser.clean_float(LinkedDataParser.get_case_insensitive(geo, "longitude"))
+    def parse_ld(ld, time_format: str = "%H:%M") -> Product:  # noqa: C901
+        item = Product()
 
         item["name"] = LinkedDataParser.get_case_insensitive(ld, "name")
         if isinstance(item["name"], list):
             item["name"] = item["name"][0]
 
-        if addr := LinkedDataParser.get_case_insensitive(ld, "address"):
-            if isinstance(addr, list):
-                addr = addr[0]
-
-            if isinstance(addr, str):
-                item["addr_full"] = addr
-            elif isinstance(addr, dict):
-                if LinkedDataParser.check_type(addr.get("@type"), "PostalAddress"):
-                    if street_address := LinkedDataParser.get_case_insensitive(addr, "streetAddress"):
-                        if isinstance(street_address, list):
-                            street_address = ", ".join(street_address)
-
-                        item["street_address"] = street_address
-                    item["city"] = LinkedDataParser.get_case_insensitive(addr, "addressLocality")
-                    item["state"] = LinkedDataParser.get_case_insensitive(addr, "addressRegion")
-                    item["postcode"] = LinkedDataParser.get_case_insensitive(addr, "postalCode")
-                    country = LinkedDataParser.get_case_insensitive(addr, "addressCountry")
-
-                    if isinstance(country, str):
-                        item["country"] = country
-                    elif isinstance(country, dict):
-                        if LinkedDataParser.check_type(country.get("@type"), "Country"):
-                            item["country"] = LinkedDataParser.get_case_insensitive(country, "name")
-
-                    # Common mistake to put "telephone" in "address"
-                    item["phone"] = LinkedDataParser.get_case_insensitive(addr, "telephone")
-
-        if item.get("phone") is None:
-            item["phone"] = LinkedDataParser.get_case_insensitive(ld, "telephone")
-
-        if isinstance(item["phone"], list):
-            item["phone"] = item["phone"][0]
-
-        if isinstance(item["phone"], str):
-            item["phone"] = item["phone"].replace("tel:", "")
-
-        item["email"] = LinkedDataParser.get_case_insensitive(ld, "email")
-
-        if isinstance(item["email"], str):
-            item["email"] = item["email"].replace("mailto:", "")
-
         item["website"] = LinkedDataParser.get_case_insensitive(ld, "url")
-
-        try:
-            item["opening_hours"] = LinkedDataParser.parse_opening_hours(ld, time_format=time_format)
-        except ValueError as e:
-            # Explicitly handle a ValueError, which is likely time_format related
-            logger.warning(f"Unable to parse opening hours - check time_format? Error was: {str(e)}")
-        except Exception as e:
-            logger.warning(f"Unhandled error, unable to parse opening hours. Error was: {type(e)} {str(e)}")
-            logger.debug(traceback.format_exc())
 
         if image := LinkedDataParser.get_case_insensitive(ld, "image"):
             if isinstance(image, list):
@@ -158,7 +96,7 @@ class LinkedDataParser:
         return item
 
     @staticmethod
-    def parse(response, wanted_type, json_parser="json") -> Feature:
+    def parse(response, wanted_type, json_parser="json") -> Product:
         ld_item = LinkedDataParser.find_linked_data(response, wanted_type, json_parser=json_parser)
         if ld_item:
             item = LinkedDataParser.parse_ld(ld_item)
@@ -216,12 +154,12 @@ class LinkedDataParser:
         return value
 
     @staticmethod
-    def parse_enhanced(t: str, ld: dict, item: Feature):
+    def parse_enhanced(t: str, ld: dict, item: Product):
         if t == "hotel":
             LinkedDataParser.parse_enhanced_hotel(ld, item)
 
     @staticmethod
-    def parse_enhanced_hotel(ld: dict, item: Feature):
+    def parse_enhanced_hotel(ld: dict, item: Product):
         if stars := LinkedDataParser.get_case_insensitive(ld, "starRating"):
             if isinstance(stars, str):
                 item["extras"]["stars"] = stars
@@ -229,7 +167,7 @@ class LinkedDataParser:
                 item["extras"]["stars"] = LinkedDataParser.get_case_insensitive(stars, "ratingValue")
 
     @staticmethod
-    def parse_same_as(ld: dict, item: Feature):
+    def parse_same_as(ld: dict, item: Product):
         if same_as := LinkedDataParser.get_clean(ld, "sameAs"):
             if isinstance(same_as, str):
                 same_as = [same_as]
