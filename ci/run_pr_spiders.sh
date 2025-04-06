@@ -163,14 +163,14 @@ do
     mkdir -p "${SPIDER_RUN_DIR}"
 
     LOGFILE="${SPIDER_RUN_DIR}/log.txt"
-    OUTFILE="${SPIDER_RUN_DIR}/output.geojson"
-    PARQUETFILE="${SPIDER_RUN_DIR}/output.parquet"
+    OUTFILE="${SPIDER_RUN_DIR}/output.json"
+    # PARQUETFILE="${SPIDER_RUN_DIR}/output.parquet"
     STATSFILE="${SPIDER_RUN_DIR}/stats.json"
     FAILURE_REASON="success"
 
     timeout -k 5s 150s \
     uv run scrapy runspider \
-        -o "file://${OUTFILE}:geojson" \
+        -o "file://${OUTFILE}:json" \
         --loglevel=INFO \
         --logfile="${LOGFILE}" \
         -s CLOSESPIDER_TIMEOUT=120 \
@@ -215,11 +215,11 @@ do
 
         OUTFILE_URL="https://alltheprices-data.openaddresses.io/ci/${CODEBUILD_BUILD_ID}/${SPIDER_NAME}/output.geojson"
 
-        # if grep -q 'Stored geojson feed' $LOGFILE; then
+        # if grep -q 'Stored json feed' $LOGFILE; then
         #     echo "${spider} has ${FEATURE_COUNT} features: https://alltheprices.xyz/preview.html?show=${OUTFILE_URL}"
         # fi
 
-        upload_file "${PARQUETFILE}" "ci/${CODEBUILD_BUILD_ID}/${SPIDER_NAME}/output.parquet"
+        # upload_file "${PARQUETFILE}" "ci/${CODEBUILD_BUILD_ID}/${SPIDER_NAME}/output.parquet"
         upload_file "${STATSFILE}" "ci/${CODEBUILD_BUILD_ID}/${SPIDER_NAME}/stats.json"
 
         # Check the stats JSON to look for things that we consider warnings or errors
