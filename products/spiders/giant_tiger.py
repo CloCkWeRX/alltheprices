@@ -2,6 +2,7 @@ from scrapy.spiders import SitemapSpider
 
 from products.structured_data_spider import StructuredDataSpider
 
+
 class GiantTigerSpider(SitemapSpider, StructuredDataSpider):
     name = "giant_tiger"
     allowed_domains = ["gianttiger.com"]
