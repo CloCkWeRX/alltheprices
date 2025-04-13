@@ -7,8 +7,8 @@ from scrapy.http import Response
 
 # from products.categories import PaymentMethods, map_payment
 from products.items import Product
-from products.microdata_parser import MicrodataParser
 from products.linked_data_parser import LinkedDataParser
+from products.microdata_parser import MicrodataParser
 
 
 def extract_image(item, response):
