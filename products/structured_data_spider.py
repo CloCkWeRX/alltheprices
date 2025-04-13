@@ -7,6 +7,7 @@ from scrapy.http import Response
 
 # from products.categories import PaymentMethods, map_payment
 from products.items import Product
+from products.microdata_parser import MicrodataParser
 from products.linked_data_parser import LinkedDataParser
 
 
@@ -68,7 +69,7 @@ class StructuredDataSpider(Spider):
         # SomeProducts
         # Vehicle
     ]
-    # convert_microdata = True
+    convert_microdata = True
     search_for_image = True
     json_parser = "json"
 
@@ -271,8 +272,8 @@ class StructuredDataSpider(Spider):
         TypeAndQuantityNode	The product that this structured value is referring to.
         """
 
-        # if self.convert_microdata:
-        #     MicrodataParser.convert_to_json_ld(response)
+        if self.convert_microdata:
+            MicrodataParser.convert_to_json_ld(response)
         for ld_item in self.iter_linked_data(response):
             self.pre_process_data(ld_item)
 
