@@ -20,7 +20,7 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-        cache: 'ev'
+        cache: 'uv'
     - name: Install uv
       run: |
         uv --quiet install ev
