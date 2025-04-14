@@ -303,7 +303,7 @@ class StructuredDataSpider(Spider):
             if item.get("image") and item["image"].startswith("/"):
                 item["image"] = urljoin(response.url, item["image"])
 
-            if item.get("offers") is not None:
+            if "offers" in ld_item:
                 extract_offers(item, response, ld_item)
 
             yield from self.post_process_item(item, response, ld_item) or []
