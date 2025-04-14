@@ -1,5 +1,6 @@
 from scrapy.spiders import SitemapSpider
 
+# from products.categories import PaymentMethods, map_payment
 from products.structured_data_spider import StructuredDataSpider
 
 
