@@ -2,6 +2,7 @@ from scrapy.spiders import SitemapSpider
 
 from products.structured_data_spider import StructuredDataSpider
 
+
 class NovusUASpider(SitemapSpider, StructuredDataSpider):
     name = "novus_ua"
     allowed_domains = ["novus.ua"]
