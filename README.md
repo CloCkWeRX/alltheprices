@@ -1,6 +1,6 @@
 A proof of concept repository to use the same style of scraping approach as [alltheplaces.xyz](https://alltheplaces.xyz/); in the Product domain.
 
-The intended result is a dataset compatible with [Open Prices](https://github.com/openfoodfacts/open-prices) and or [ONDC](https://ondc.org/) services.
+The intended result is a dataset compatible with [Open Prices](https://github.com/openfoodfacts/open-prices) and or [ONDC](https://ondc.org/) services (a particular focus on grocery/supermarkets/food supply)
 
 Borrows liberally from the codebase of https://alltheplaces.xyz/
 
