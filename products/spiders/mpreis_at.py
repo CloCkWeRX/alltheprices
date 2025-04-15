@@ -3,7 +3,7 @@ from scrapy.spiders import SitemapSpider
 from products.structured_data_spider import StructuredDataSpider
 
 
-class MpriesATSpider(SitemapSpider, StructuredDataSpider):
+class MpreisATSpider(SitemapSpider, StructuredDataSpider):
     name = "mpreis_at"
     allowed_domains = ["mpreis.at"]
     item_attributes = {
