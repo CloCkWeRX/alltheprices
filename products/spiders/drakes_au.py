@@ -1,14 +1,22 @@
 import scrapy
-
-from scrapy.spiders import SitemapSpider
-from scrapy.http import Request, Response, XmlResponse
-from scrapy.spiders import CrawlSpider, Rule
+from scrapy.http import Request
 from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule, SitemapSpider
+
 from products.structured_data_spider import StructuredDataSpider
 
 
 class DrakesAUSpider(CrawlSpider, SitemapSpider, StructuredDataSpider):
     name = "drakes_au"
+    item_attributes = {
+        "extras": {
+            "seller": {
+                "@type": "Organization",
+                "@id": "https://www.wikidata.org/wiki/Q48988077",
+                "name": "Drakes Supermarkets",
+            }
+        }
+    }
 
     sitemap_rules = [
         (r"/lines/[\w-]+", "parse_sd"),
@@ -16,9 +24,7 @@ class DrakesAUSpider(CrawlSpider, SitemapSpider, StructuredDataSpider):
     allowed_domains = ["drakes.com.au"]
     start_urls = ["https://online.drakes.com.au/multipage"]
 
-    rules = (
-        Rule(LinkExtractor(allow=(r"i_choose_you",)), callback="detect_subdomain"),
-    )
+    rules = (Rule(LinkExtractor(allow=(r"i_choose_you",)), callback="detect_subdomain"),)
 
     def start_requests(self):
         for url in self.start_urls:

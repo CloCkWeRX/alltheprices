@@ -98,6 +98,7 @@ EXTENSIONS = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
+    "products.pipelines.apply_spider_level_attributes.ApplySpiderLevelAttributesPipeline": 100,
     "products.pipelines.duplicates.DuplicatesPipeline": 200,
 }
 
