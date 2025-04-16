@@ -7,6 +7,15 @@ from products.structured_data_spider import StructuredDataSpider
 class JokerNOSpider(SitemapSpider, StructuredDataSpider):
     name = "joker_no"
     allowed_domains = ["joker.no"]
+    item_attributes = {
+        "extras": {
+            "seller": {
+                "@type": "Organization",
+                "@id": "https://www.wikidata.org/wiki/Q716328",
+                "name": "Joker",
+            }
+        }
+    }
 
     sitemap_urls = ["https://joker.no/robots.txt"]
     sitemap_rules = [
