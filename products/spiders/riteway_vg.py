@@ -3,8 +3,8 @@ from scrapy.spiders import SitemapSpider
 from products.structured_data_spider import StructuredDataSpider
 
 
-class RitewaySpider(SitemapSpider, StructuredDataSpider):
-    name = "riteway"
+class RitewayVGSpider(SitemapSpider, StructuredDataSpider):
+    name = "riteway_vg"
     allowed_domains = ["riteway.vg"]
     item_attributes = {
         "extras": {
