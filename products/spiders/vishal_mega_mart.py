@@ -3,7 +3,7 @@ from scrapy.spiders import SitemapSpider
 from products.structured_data_spider import StructuredDataSpider
 
 
-class VishaelMegaMartSpider(SitemapSpider, StructuredDataSpider):
+class VishalMegaMartSpider(SitemapSpider, StructuredDataSpider):
     name = "vishal_mega_mart"
     allowed_domains = ["vishalmegamart.com"]
     item_attributes = {
