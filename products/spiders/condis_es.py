@@ -1,5 +1,7 @@
+from scrapy.http import Response
 from scrapy.spiders import SitemapSpider
 
+from products.items import Product
 from products.structured_data_spider import StructuredDataSpider
 
 
@@ -20,3 +22,14 @@ class CondisESSpider(SitemapSpider, StructuredDataSpider):
     sitemap_rules = [
         (r"https://www.condisline.com/(.*).jsp", "parse_sd"),
     ]
+
+
+    # TODO: If this pattern is common, extract to opengraphparser
+    def post_process_item(self, item: Product, response: Response, ld_data: dict, **kwargs):
+
+        price_js = response.xpath('//script[contains(text(), "formatNumber(")]/text()').get() # IE: formatNumber('1.29', 'list_price_111081');
+
+        price = price_js.split("formatNumber('")[1].split("', ")[0]
+        item["offers"][0]["price"] = price
+
+        yield item
