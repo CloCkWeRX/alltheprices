@@ -8,6 +8,7 @@ from scrapy.http import Response
 # from products.categories import PaymentMethods, map_payment
 from products.items import Product
 from products.linked_data_parser import LinkedDataParser
+from products.microdata_parser import MicrodataParser
 
 
 def extract_image(item, response):
@@ -68,7 +69,7 @@ class StructuredDataSpider(Spider):
         # SomeProducts
         # Vehicle
     ]
-    # convert_microdata = True
+    convert_microdata = True
     search_for_image = True
     json_parser = "json"
 
@@ -271,8 +272,8 @@ class StructuredDataSpider(Spider):
         TypeAndQuantityNode	The product that this structured value is referring to.
         """
 
-        # if self.convert_microdata:
-        #     MicrodataParser.convert_to_json_ld(response)
+        if self.convert_microdata:
+            MicrodataParser.convert_to_json_ld(response)
         for ld_item in self.iter_linked_data(response):
             self.pre_process_data(ld_item)
 
@@ -302,7 +303,8 @@ class StructuredDataSpider(Spider):
             if item.get("image") and item["image"].startswith("/"):
                 item["image"] = urljoin(response.url, item["image"])
 
-            extract_offers(item, response, ld_item)
+            if "offers" in ld_item:
+                extract_offers(item, response, ld_item)
 
             yield from self.post_process_item(item, response, ld_item) or []
 
