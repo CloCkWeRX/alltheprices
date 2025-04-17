@@ -1,9 +1,9 @@
 from scrapy.spiders import SitemapSpider
 
-from products.structured_data_spider import StructuredDataSpider
+from products.open_graph_spider import OpenGraphSpider
 
 
-class BoothsGBSpider(SitemapSpider, StructuredDataSpider):
+class BoothsGBSpider(SitemapSpider, OpenGraphSpider):
     name = "booths_gb"
     allowed_domains = ["booths.co.uk"]
     item_attributes = {
@@ -18,5 +18,5 @@ class BoothsGBSpider(SitemapSpider, StructuredDataSpider):
 
     sitemap_urls = ["https://orders.booths.co.uk/robots.txt"]
     sitemap_rules = [
-        (r"https://orders.booths.co.uk/[\w-]+.html", "parse_sd"),
+        (r"https://orders.booths.co.uk/[\w-]+.html", "parse_og"),
     ]
