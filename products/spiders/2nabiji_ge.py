@@ -6,8 +6,17 @@ from products.structured_data_spider import StructuredDataSpider
 
 
 class NabijiGESpider(SitemapSpider, StructuredDataSpider):
-    name = "2nabiji_ge"
+    name = "nabiji_ge"
     allowed_domains = ["2nabiji.ge"]
+    item_attributes = {
+        "extras": {
+            "seller": {
+                "@type": "Organization",
+                "@id": "https://www.wikidata.org/wiki/Q115949750",
+                "name": "Ori Nabiji",
+            }
+        }
+    }
 
     sitemap_urls = ["https://2nabiji.ge/robots.txt"]
     sitemap_rules = [
