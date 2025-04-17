@@ -1,9 +1,8 @@
+from scrapy.http import Response
 from scrapy.spiders import SitemapSpider
 
-from products.structured_data_spider import StructuredDataSpider
-
-from scrapy.http import Response
 from products.items import Product
+from products.structured_data_spider import StructuredDataSpider
 
 
 class BiocoopFRSpider(SitemapSpider, StructuredDataSpider):
@@ -30,10 +29,6 @@ class BiocoopFRSpider(SitemapSpider, StructuredDataSpider):
         price = response.xpath('//meta[@property="product:price:amount"]/@content').get()
         currency = response.xpath('//meta[@property="product:price:currency"]/@content').get()
 
-        item["offers"] = {
-            "@type": "Offer",
-            "price": price,
-            "priceCurrency": currency
-        }
+        item["offers"] = {"@type": "Offer", "price": price, "priceCurrency": currency}
 
         yield item
