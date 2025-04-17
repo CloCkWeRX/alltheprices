@@ -14,5 +14,5 @@ class CeleiroPTSpider(SitemapSpider, StructuredDataSpider):
 
     sitemap_urls = ["https://celeiro.pt/robots.txt"]
     sitemap_rules = [
-        (r"https://celeiro.pt/[\d]+-[\w-]+", "parse_sd"),
+        (r"https://www.celeiro.pt/[\d]+-[\w-]+", "parse_sd"),
     ]
