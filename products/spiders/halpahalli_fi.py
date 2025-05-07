@@ -8,7 +8,11 @@ class HalpahalliFISpider(SitemapSpider, StructuredDataSpider):
     allowed_domains = ["halpahalli.fi"]
     item_attributes = {
         "extras": {
-            "seller": {"@type": "Organization", "@id": "https://www.wikidata.org/wiki/Q11861256", "name": "Kokkolan Halpa-Halli Oy"}
+            "seller": {
+                "@type": "Organization",
+                "@id": "https://www.wikidata.org/wiki/Q11861256",
+                "name": "Kokkolan Halpa-Halli Oy",
+            }
         }
     }
 
