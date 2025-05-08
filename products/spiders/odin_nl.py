@@ -1,11 +1,10 @@
-from scrapy.spiders import SitemapSpider
-
-from products.structured_data_spider import StructuredDataSpider
-
 from scrapy.http import Response
+from scrapy.spiders import SitemapSpider
 
 # from products.categories import PaymentMethods, map_payment
 from products.items import Product
+from products.structured_data_spider import StructuredDataSpider
+
 
 class OdinNLSpider(SitemapSpider, StructuredDataSpider):
     name = "odin_nl"
@@ -42,7 +41,7 @@ class OdinNLSpider(SitemapSpider, StructuredDataSpider):
                 # BIO? Any others?
                 if value == "-":
                     pass
-                else: # BIO, any other labels?
+                else:  # BIO, any other labels?
                     item["extras"]["quality"] = value
             elif label == "Land van herkomst":
                 item["extras"]["countryOfOrigin"] = value
@@ -58,7 +57,6 @@ class OdinNLSpider(SitemapSpider, StructuredDataSpider):
 
             if label == "Merk":
                 item["brand"] = value
-                pass
             elif label == "Inhoud":
                 # Weight
                 # 250 GR
@@ -66,24 +64,17 @@ class OdinNLSpider(SitemapSpider, StructuredDataSpider):
             elif label == "Prijs":
                 # Price
                 # € 4,59
-                item["offers"].append({
-                    "price": value.split("€ ")[1].replace(",", "."),
-                    "priceCurrency": "EUR"
-                })
+                item["offers"].append({"price": value.split("€ ")[1].replace(",", "."), "priceCurrency": "EUR"})
             elif label == "Ledenprijs":
                 # Member Price
                 # € 3,89
-                item["offers"].append({
-                    "name": "Ledenprijs",
-                    "price": value.split("€ ")[1].replace(",", "."),
-                    "priceCurrency": "EUR"
-                })
+                item["offers"].append(
+                    {"name": "Ledenprijs", "price": value.split("€ ")[1].replace(",", "."), "priceCurrency": "EUR"}
+                )
             else:
                 print(label)
                 print(value)
 
-
-        
     def post_process_item(self, item: Product, response: Response, ld_data: dict, **kwargs):
         """Override with any post-processing on the item."""
         self.map_properties(item, response)
