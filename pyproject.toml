@@ -36,7 +36,7 @@ dependencies = [
 ]
 
 [tool.uv]
-dev-dependencies = [ "autoflake8",
+dependency-groups.dev = [ "autoflake8",
     "awscli",
     "black",
     "boto3",
