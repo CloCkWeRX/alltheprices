@@ -11,19 +11,12 @@ if [ -z "${GITHUB_WORKSPACE}" ]; then
     exit 1
 fi
 
-if [ -z "${GITHUB_TOKEN}" ]; then
-    (>&2 echo "Please set GITHUB_TOKEN environment variable")
-    exit 1
-fi
-
-GITHUB_AUTH="scraperbot:${GITHUB_TOKEN}"
-
 RUN_START=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 RUN_TIMESTAMP=$(date -u +%F-%H-%M-%S)
 RUN_KEY_PREFIX="runs/${RUN_TIMESTAMP}"
 RUN_S3_PREFIX="s3://${S3_BUCKET}/${RUN_KEY_PREFIX}"
 RUN_R2_PREFIX="s3://${R2_BUCKET}/${RUN_KEY_PREFIX}"
-RUN_URL_PREFIX="https://alltheprices-data.openaddresses.io/${RUN_KEY_PREFIX}"
+RUN_URL_PREFIX="https://alltheprices-data/${RUN_KEY_PREFIX}"
 SPIDER_RUN_DIR="${GITHUB_WORKSPACE}/output"
 PARALLELISM=${PARALLELISM:-12}
 SPIDER_TIMEOUT=${SPIDER_TIMEOUT:-28800} # default to 8 hours
