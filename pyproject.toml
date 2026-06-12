@@ -2,7 +2,7 @@
 name = "alltheprices"
 version = "0.0.0"
 description = "A set of spiders to extract location information from places that post their location on the internet."
-requires-python = ">=3.11,<3.12"
+requires-python = ">=3.11"
 dependencies = [
     "babel",
     "boto3",
@@ -35,8 +35,9 @@ dependencies = [
     "xmltodict",
 ]
 
-[tool.uv]
-dependency-groups.dev = [ "autoflake8",
+[dependency-groups]
+dev = [
+    "autoflake8",
     "awscli",
     "black",
     "boto3",
@@ -47,6 +48,8 @@ dependency-groups.dev = [ "autoflake8",
     "pylint",
     "pytest",
 ]
+
+[tool.uv]
 
 [[tool.uv.index]]
 name = "pypi"
