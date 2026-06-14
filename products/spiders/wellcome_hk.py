@@ -7,6 +7,16 @@ class WellcomeHKSpider(CrawlSpider, StructuredDataSpider):
     allowed_domains = ["wellcome.com.hk"]
     start_urls = ["https://www.wellcome.com.hk/zh-hant/"]
 
+    item_attributes = {
+        "extras": {
+            "seller": {
+                "@type": "Organization",
+                "@id": "https://www.wikidata.org/wiki/Q706247",
+                "name": "Wellcome",
+            }
+        }
+    }
+
     rules = (
         Rule(LinkExtractor(allow=r"/p/.+/i/.+\.html"), callback="parse_sd"),
         Rule(LinkExtractor(allow=r"/category/")),
