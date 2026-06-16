@@ -31,7 +31,3 @@ class DirkNLSpider(SitemapSpider, StructuredDataSpider):
             }
         }
     }
-
-    custom_settings = {
-        "CLOSESPIDER_TIMEOUT": 120,
-    }
