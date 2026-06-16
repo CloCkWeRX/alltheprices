@@ -73,7 +73,8 @@ class StructuredDataSpider(Spider):
     search_for_image = True
     json_parser = "json"
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         for i, wanted in enumerate(self.wanted_types):
             if isinstance(wanted, list):
                 self.wanted_types[i] = [LinkedDataParser.clean_type(t) for t in wanted]
