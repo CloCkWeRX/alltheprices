@@ -4,7 +4,7 @@ from scrapy.spiders import SitemapSpider
 from products.structured_data_spider import StructuredDataSpider
 
 
-class BigCTHSpider(SitemapSpider, StructuredDataSpider):
+class BigcTHSpider(SitemapSpider, StructuredDataSpider):
     """
     Big C Thailand spider.
     Bypasses Cloudflare using Playwright.

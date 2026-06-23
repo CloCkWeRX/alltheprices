@@ -7,7 +7,7 @@ from scrapy.linkextractors import LinkExtractor
 from products.structured_data_spider import StructuredDataSpider
 
 
-class ChataPolskaSpider(CrawlSpider, StructuredDataSpider):
+class ChatapolskaSpider(CrawlSpider, StructuredDataSpider):
     """
     Spider for Chata Polska (Poland).
     Wikidata: Q89254287
