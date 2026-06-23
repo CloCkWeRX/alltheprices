@@ -10,7 +10,7 @@ from products.structured_data_spider import StructuredDataSpider
 from products.user_agents import BROWSER_DEFAULT
 
 
-class PlazaVeaPESpider(SitemapSpider, StructuredDataSpider):
+class PlazaveaPESpider(SitemapSpider, StructuredDataSpider):
     name = "plazavea_pe"
     allowed_domains = ["plazavea.com.pe"]
     user_agent = BROWSER_DEFAULT
