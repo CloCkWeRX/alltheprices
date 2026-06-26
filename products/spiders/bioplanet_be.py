@@ -17,7 +17,19 @@ class BioplanetBESpider(SitemapSpider, StructuredDataSpider):
         "website": "https://www.bioplanet.be/nl/producten/bio-elstar-appelen-circa-1kg-8212",
         "image": "https://static.colruytgroup.com/images/500x500/std.lang.all/89/90/asset-368990.jpg",
         "ref": "8212",
-        "brand": "Oxfam fairtrade"
+        "brand": "Oxfam fairtrade",
+        "extras": {
+            "seller": {
+                "@type": "Organization",
+                "@id": "https://www.wikidata.org/wiki/Q122415968",
+                "name": "Bio-Planet",
+                "parentOrganization": {
+                    "@type": "Organization",
+                    "@id": "https://www.wikidata.org/wiki/Q1111963",
+                    "name": "Colruyt Group"
+                }
+            }
+        }
     }
     """
 
