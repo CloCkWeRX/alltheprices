@@ -23,10 +23,6 @@ class CoopFirenzeSpider(SitemapSpider, StructuredDataSpider):
         }
     }
 
-    custom_settings = {
-        "CLOSESPIDER_TIMEOUT": 120,
-    }
-
     product_extractor = LinkExtractor(
         allow=r"/[0-9]{13}\.html",
     )
