@@ -11,6 +11,35 @@ class SilpoUASpider(CrawlSpider, StructuredDataSpider):
     Spider for Silpo (Ukraine).
     Wikidata: Q4419434
 
+    Sample output:
+    {
+        "name": "Йогурт «На здоров'я» «Гρεцький» 10% 280г",
+        "website": "https://silpo.ua/product/yogurt-na-zdorov-ia-gretskyi-10-917589",
+        "image": "https://images.silpo.ua/v2/products/500x500/origin/dbfafde1-2019-4cc3-b616-20877ff8fcaf.png",
+        "ref": "917589",
+        "offers": [
+            {
+                "@type": "Offer",
+                "price": "53.49",
+                "priceCurrency": "UAH",
+                "availability": "https://schema.org/InStock",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Сільпо"
+                }
+            }
+        ],
+        "located_in_wikidata": "Q4419434",
+        "proof_currency": "UAH",
+        "extras": {
+            "seller": {
+                "@type": "Organization",
+                "@id": "https://www.wikidata.org/wiki/Q4419434",
+                "name": "Сільпо"
+            }
+        }
+    }
+
     @url https://silpo.ua/product/vershky-galychyna-ultrapasteryzovani-10-815587
     @returns items 1
     @scrapes name website image ref offers
@@ -18,22 +47,7 @@ class SilpoUASpider(CrawlSpider, StructuredDataSpider):
 
     name = "silpo_ua"
     allowed_domains = ["silpo.ua"]
-    start_urls = [
-        "https://silpo.ua/category/frukty-ovochi-4788",
-        "https://silpo.ua/category/m-iaso-4411",
-        "https://silpo.ua/category/ryba-ikra-4458",
-        "https://silpo.ua/category/molochni-produkty-ta-iaitsia-234",
-        "https://silpo.ua/category/khlib-vypichka-kondyterski-vyroby-278",
-        "https://silpo.ua/category/bakaliia-293",
-        "https://silpo.ua/category/napoi-209",
-        "https://silpo.ua/category/alkogol-355",
-        "https://silpo.ua/category/soloshchi-sneky-311",
-        "https://silpo.ua/category/zamorozheni-produkty-336",
-        "https://silpo.ua/category/dytiachi-tovary-391",
-        "https://silpo.ua/category/tovary-dlia-tila-ta-zdorov-ia-375",
-        "https://silpo.ua/category/tovary-dlia-domu-hospodarchi-tovary-413",
-        "https://silpo.ua/category/tovary-dlia-tvaryn-444",
-    ]
+    start_urls = ["https://silpo.ua/"]
 
     item_attributes = {
         "located_in_wikidata": "Q4419434",
