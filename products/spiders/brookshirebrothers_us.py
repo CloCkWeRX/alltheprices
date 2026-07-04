@@ -8,6 +8,23 @@ class BrookshirebrothersUSSpider(SitemapSpider):
     """
     Brookshire Brothers (United States) spider.
     Wikidata: Q4975084
+
+    Sample output structured data:
+    {
+        "extras": {
+            "@source_uri": "https://production-us-1.noq-servers.net/api/v1/application/products/3e39bbd3-9786-4b18-a861-b0bf00cf0956"
+        },
+        "gtin": "4709",
+        "image": "https://d13jicmd7uan86.cloudfront.net/2294e1ff-b8bc-4dc8-83c7-abfb0074172a",
+        "located_in_wikidata": "Q4975084",
+        "name": "Pepper, Serrano",
+        "price": "2.24",
+        "price_is_discounted": false,
+        "price_without_discount": "2.24",
+        "proof_currency": "USD",
+        "ref": "3e39bbd3-9786-4b18-a861-b0bf00cf0956",
+        "website": "https://shop.brookshirebrothers.com/online/store-74/shop/all?pid=3e39bbd3-9786-4b18-a861-b0bf00cf0956&productName=pepper"
+    }
     """
     name = "brookshirebrothers_us"
     allowed_domains = ["brookshirebrothers.com", "noq-servers.net"]
