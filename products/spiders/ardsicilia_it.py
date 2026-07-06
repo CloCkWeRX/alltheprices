@@ -28,25 +28,44 @@ class ArdsiciliaITSpider(Spider):
     """
     name = "ardsicilia_it"
     allowed_domains = ["studiovatore.com", "arddiscount.it"]
-    api_url = "https://api-ard-prd.studiovatore.com/api/pricelist/pricelistservices/listPublic"
+    list_url = "https://api-ard-prd.studiovatore.com/api/product/products/list"
+    detail_url = "https://api-ard-prd.studiovatore.com/api/pricelist/pricelistservices/listPublic"
 
     custom_settings = {
-        "CONCURRENT_REQUESTS": 32,
-        "DOWNLOAD_DELAY": 0.1,
+        "CONCURRENT_REQUESTS": 16,
+        "DOWNLOAD_DELAY": 0.2,
     }
 
     def start_requests(self):
-        # Bruteforce service IDs as no product listing was found in static HTML or sitemaps.
-        # IDs around 1, 9498, 9546, 10000 were found to be valid.
-        for service_id in range(1, 10001):
-            yield JsonRequest(
-                url=self.api_url,
-                data={"serviceId": service_id, "showService": True},
-                callback=self.parse,
-                meta={"serviceId": service_id}
-            )
+        yield JsonRequest(
+            url=self.list_url,
+            data={"limit": 100, "page": 1, "searchField": []},
+            callback=self.parse
+        )
 
     def parse(self, response):
+        data = response.json()
+        items = data.get("items", [])
+        for item in items:
+            service_id = item.get("id")
+            if service_id:
+                yield JsonRequest(
+                    url=self.detail_url,
+                    data={"serviceId": service_id, "showService": True},
+                    callback=self.parse_product,
+                    meta={"serviceId": service_id}
+                )
+
+        total_pages = data.get("totalPages", 0)
+        current_page = data.get("page", 1)
+        if current_page < total_pages:
+            yield JsonRequest(
+                url=self.list_url,
+                data={"limit": 100, "page": current_page + 1, "searchField": []},
+                callback=self.parse
+            )
+
+    def parse_product(self, response):
         data = response.json()
         items = data.get("items", [])
         if not items:
@@ -63,6 +82,10 @@ class ArdsiciliaITSpider(Spider):
         abstract = product_data.get("abstract", "")
         if abstract:
             name = f"{name} {abstract}".strip()
+
+        if not name:
+            # Fallback to some placeholder if name is still empty
+            name = "Prodotto senza nome"
 
         product["name"] = name
         product["ref"] = str(product_data.get("id"))
