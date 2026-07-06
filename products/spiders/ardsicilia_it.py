@@ -1,0 +1,89 @@
+from scrapy import Spider
+from scrapy.http import JsonRequest
+from products.items import Product
+
+class ArdsiciliaITSpider(Spider):
+    """
+    Spider for ARD Discount (Sicilia, Italy).
+    Retailer website: https://www.arddiscount.it/
+    The site is an Angular SPA that fetches product data from a private API.
+
+    Sample output:
+    {
+        "name": "Croccantini Per Cane Adulto purams",
+        "ref": "9546",
+        "sku": "43390",
+        "image": "https://portale-interattivo.s3.eu-central-1.amazonaws.com/campagna/813/thumb/67f387bcef293.jpg",
+        "website": "https://www.arddiscount.it/offerta/9546",
+        "offers": [
+            {
+                "@type": "Offer",
+                "price": 9.99,
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock"
+            }
+        ],
+        "description": "kg.10"
+    }
+    """
+    name = "ardsicilia_it"
+    allowed_domains = ["studiovatore.com", "arddiscount.it"]
+    api_url = "https://api-ard-prd.studiovatore.com/api/pricelist/pricelistservices/listPublic"
+
+    custom_settings = {
+        "CONCURRENT_REQUESTS": 32,
+        "DOWNLOAD_DELAY": 0.1,
+    }
+
+    def start_requests(self):
+        # Bruteforce service IDs as no product listing was found in static HTML or sitemaps.
+        # IDs around 1, 9498, 9546, 10000 were found to be valid.
+        for service_id in range(1, 10001):
+            yield JsonRequest(
+                url=self.api_url,
+                data={"serviceId": service_id, "showService": True},
+                callback=self.parse,
+                meta={"serviceId": service_id}
+            )
+
+    def parse(self, response):
+        data = response.json()
+        items = data.get("items", [])
+        if not items:
+            return
+
+        item_data = items[0]
+        product_data = item_data.get("Product", {})
+        if not product_data:
+            return
+
+        product = Product()
+
+        name = product_data.get("name", "")
+        abstract = product_data.get("abstract", "")
+        if abstract:
+            name = f"{name} {abstract}".strip()
+
+        product["name"] = name
+        product["ref"] = str(product_data.get("id"))
+        product["sku"] = product_data.get("sku")
+        product["image"] = product_data.get("imageUrl")
+        product["description"] = product_data.get("description")
+
+        # Base website URL construction
+        slug = product_data.get("slug")
+        if slug:
+            product["website"] = f"https://www.arddiscount.it/offerta/{product['ref']}/{slug}"
+        else:
+            product["website"] = f"https://www.arddiscount.it/offerta/{product['ref']}"
+
+        price = item_data.get("priceReductionFirst")
+        if price:
+            product["offers"] = [{
+                "@type": "Offer",
+                "price": float(price),
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock" if product_data.get("status") == "active" else "https://schema.org/OutOfStock"
+            }]
+
+        yield product
