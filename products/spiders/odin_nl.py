@@ -28,14 +28,20 @@ class OdinNLSpider(SitemapSpider, StructuredDataSpider):
     def map_properties(self, item: Product, response: Response):
         article_properties = response.xpath('//div[@class="article-properties"]/div/dl/div')
         for article_property in article_properties:
-            label = article_property.xpath("dt/text()").get()
-            value = article_property.xpath("dd/text()").get().strip()
+            label_node = article_property.xpath("dt/text()").get()
+            value_node = article_property.xpath("dd/text()").get()
+
+            label = label_node.strip() if label_node else None
+            value = value_node.strip() if value_node else ""
+
+            if not label:
+                continue
 
             if label == "EAN-code":
                 item["gtin"] = value
             elif label == "Artikelcode":
                 item["ref"] = value
-            elif label == "Kiloprijs":
+            elif label == "Kiloprijs" or label == "Literprijs":
                 item["extras"]["price_kg"] = value
             elif label == "Kwaliteit":
                 # BIO? Any others?
@@ -52,8 +58,18 @@ class OdinNLSpider(SitemapSpider, StructuredDataSpider):
         item["offers"] = []
         article_properties = response.xpath('//div[@class="article-info"]/dl/div')
         for article_property in article_properties:
-            label = article_property.xpath("dt/text()").get().strip()
-            value = article_property.xpath("dd/span/text()").get().strip()
+            label_node = article_property.xpath("dt/text()").get()
+            if not label_node:
+                continue
+            label = label_node.strip()
+
+            value_node = article_property.xpath("dd/span/text()").get() or article_property.xpath("dd/text()").get()
+            if not value_node:
+                value_node = "".join(article_property.xpath("dd//text()").getall()).strip()
+
+            if not value_node:
+                continue
+            value = value_node.strip()
 
             if label == "Merk":
                 item["brand"] = value
@@ -64,13 +80,15 @@ class OdinNLSpider(SitemapSpider, StructuredDataSpider):
             elif label == "Prijs":
                 # Price
                 # € 4,59
-                item["offers"].append({"price": value.split("€ ")[1].replace(",", "."), "priceCurrency": "EUR"})
+                if "€ " in value:
+                    item["offers"].append({"price": value.split("€ ")[1].replace(",", "."), "priceCurrency": "EUR"})
             elif label == "Ledenprijs":
                 # Member Price
                 # € 3,89
-                item["offers"].append(
-                    {"name": "Ledenprijs", "price": value.split("€ ")[1].replace(",", "."), "priceCurrency": "EUR"}
-                )
+                if "€ " in value:
+                    item["offers"].append(
+                        {"name": "Ledenprijs", "price": value.split("€ ")[1].replace(",", "."), "priceCurrency": "EUR"}
+                    )
             else:
                 print(label)
                 print(value)
@@ -79,5 +97,38 @@ class OdinNLSpider(SitemapSpider, StructuredDataSpider):
         """Override with any post-processing on the item."""
         self.map_properties(item, response)
         self.map_prices(item, response)
+
+        # Extract product description from div.product-description
+        description = "".join(response.xpath('//div[@class="product-description"]//text()').getall()).strip()
+        if description:
+            item["description"] = description
+
+        # Extract sections from div.product-info
+        product_info_div = response.xpath('//div[@class="product-info"]')
+        if product_info_div:
+            h2_headers = product_info_div.xpath('.//h2')
+            for h2 in h2_headers:
+                header_text = h2.xpath('text()').get()
+                if not header_text:
+                    continue
+                header_text = header_text.strip().lower()
+
+                # Get the following sibling text node
+                sibling_text = h2.xpath('following-sibling::text()[1]').get()
+                if sibling_text and sibling_text.strip():
+                    sibling_text = sibling_text.strip()
+                else:
+                    # Sibling could be in a p tag or span tag
+                    sibling_text = "".join(h2.xpath('following-sibling::*[1]//text()').getall()).strip()
+
+                if sibling_text:
+                    if "ingredi" in header_text:
+                        item["extras"]["ingredients"] = sibling_text
+                    elif "gebruiker" in header_text or "tips" in header_text:
+                        item["extras"]["usage"] = sibling_text
+                    elif "suggestie" in header_text:
+                        item["extras"]["suggestions"] = sibling_text
+                    elif "voeding" in header_text:
+                        item["extras"]["nutrients"] = sibling_text
 
         yield item
