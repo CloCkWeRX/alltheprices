@@ -8,7 +8,7 @@ from products.items import Product
 from products.structured_data_spider import StructuredDataSpider
 
 
-class HagkaupISSpider(CrawlSpider, StructuredDataSpider):
+class HagkaupIsSpider(CrawlSpider, StructuredDataSpider):
     """
     Hagkaup (Iceland) spider.
     Issue #227. Wikidata Q3482054.
