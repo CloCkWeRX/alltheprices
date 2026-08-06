@@ -17,7 +17,7 @@ class DuplicatesPipeline:
         ref = (spider.name, item["ref"])
         if ref in self.ids_seen:
             self.duplicate_count = self.duplicate_count + 1
-            raise DropItem()
+            raise DropItem("Duplicate item")
         else:
             self.ids_seen.add(ref)
             return item
