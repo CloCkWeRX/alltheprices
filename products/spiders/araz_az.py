@@ -37,6 +37,14 @@ class ArazAZSpider(SitemapSpider, StructuredDataSpider):
         (r"/products/", "parse_sd"),
     ]
 
+    def _clean_mojibake(self, text):
+        if not text or not isinstance(text, str):
+            return text
+        try:
+            return text.encode("latin-1").decode("utf-8")
+        except Exception:
+            return text
+
     def iter_linked_data(self, response) -> Iterable[dict]:
         yield from super().iter_linked_data(response)
 
@@ -66,9 +74,10 @@ class ArazAZSpider(SitemapSpider, StructuredDataSpider):
 
                     product_data = self._find_product(data)
                     if product_data:
+                        title = self._clean_mojibake(product_data.get("title"))
                         ld_item = {
                             "@type": "Product",
-                            "name": product_data.get("title"),
+                            "name": title,
                             "sku": product_data.get("barcode"),
                             "image": product_data.get("images"),
                             "offers": {
@@ -80,9 +89,9 @@ class ArazAZSpider(SitemapSpider, StructuredDataSpider):
                             },
                         }
 
-                    if title := product_data.get("title"):
-                        # Brands are usually the first word in the title on this site
-                        ld_item["brand"] = title.split(" ")[0]
+                        if title:
+                            # Brands are usually the first word in the title on this site
+                            ld_item["brand"] = title.split(" ")[0]
 
                         yield ld_item
                 except Exception:
@@ -133,9 +142,12 @@ class ArazAZSpider(SitemapSpider, StructuredDataSpider):
             item["ref"] = str(ld_data["sku"])
 
         if not item.get("name"):
-            item["name"] = (
+            name_raw = (
                 response.xpath('//meta[@property="og:title"]/@content').get()
                 or response.xpath("//title/text()").get()
             )
+            item["name"] = self._clean_mojibake(name_raw)
+        else:
+            item["name"] = self._clean_mojibake(item.get("name"))
 
         yield item
